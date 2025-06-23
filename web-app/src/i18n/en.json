@@ -1,0 +1,19 @@
+{
+  "login": "Login",
+  "register": "Register",
+  "email": "Email",
+  "phone": "Phone",
+  "password": "Password",
+  "logout": "Logout",
+  "dashboard": "Dashboard",
+  "users": "Users",
+  "pickups": "Pickups",
+  "tenders": "Tenders",
+  "verifications": "Verifications",
+  "dump_sites": "Dump Sites",
+  "system_logs": "System Logs",
+  "language": "Language",
+  "english": "English",
+  "swahili": "Swahili",
+  "role": "Role"
+} 

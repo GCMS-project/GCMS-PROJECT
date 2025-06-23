@@ -1,0 +1,24 @@
+{
+  "name": "garbage_collection_system",
+  "version": "1.0.0",
+  "description": "A comprehensive, production-ready garbage collection management system designed for global deployment with special focus on Tanzania and other developing regions.",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "migrate": "node-pg-migrate up --migrations-dir db/migrations --database-url postgres://postgres:Link%40babe32@localhost:5432/gcms-v2",
+    "migrate:down": "node-pg-migrate down --migrations-dir db/migrations --database-url postgres://postgres:Link%40babe32@localhost:5432/gcms-v2",
+    "migrate:create": "node-pg-migrate create --migrations-dir db/migrations --language js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "node-pg-migrate": "^8.0.3",
+    "pg": "^8.16.2"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "login": "Ingia",
+  "register": "Jisajili",
+  "email": "Barua Pepe",
+  "phone": "Simu",
+  "password": "Nenosiri",
+  "logout": "Toka",
+  "dashboard": "Dashibodi",
+  "users": "Watumiaji",
+  "pickups": "Uchukuzi",
+  "tenders": "Zabuni",
+  "verifications": "Uhakiki",
+  "dump_sites": "Vituo vya Kutupa Taka",
+  "system_logs": "Kumbukumbu za Mfumo",
+  "language": "Lugha",
+  "english": "Kiingereza",
+  "swahili": "Kiswahili",
+  "role": "Nafasi"
+} 
