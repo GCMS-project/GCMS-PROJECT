@@ -1,0 +1,803 @@
+================================================================================
+                    GCMS WEB APPLICATION DEVELOPMENT GUIDELINES
+================================================================================
+
+📋 TABLE OF CONTENTS
+===================
+1. Project Overview
+2. Technology Stack
+3. Project Structure
+4. Development Setup
+5. Coding Standards & Best Practices
+6. Component Development Guidelines
+7. State Management
+8. API Integration
+9. Styling & UI/UX Guidelines
+10. Testing Strategy
+11. Performance Optimization
+12. Security Considerations
+13. Deployment Guidelines
+14. Troubleshooting
+15. Useful Resources
+
+================================================================================
+1. PROJECT OVERVIEW
+================================================================================
+
+🎯 Project: Garbage Collection Management System (GCMS) - Web Application
+🌐 Purpose: Modern web interface for managing garbage collection operations
+👥 Target Users: Admins, Customers, Pickers, Dumpsite Officers, Tender Officers
+📱 Platform: Responsive web application (desktop, tablet, mobile)
+
+Key Features:
+- Multi-role authentication system
+- Real-time pickup management
+- Interactive dashboard with analytics
+- Multi-language support (English, Swahili)
+- Responsive design with professional UI
+- Real-time notifications
+- Map integration for location services
+
+================================================================================
+2. TECHNOLOGY STACK
+================================================================================
+
+🛠️ Core Technologies:
+- React 19.1.0 (Latest)
+- TypeScript 5.8.3
+- Vite 6.3.5 (Build tool)
+- React Router DOM 7.6.2 (Routing)
+
+🎨 UI & Styling:
+- Tailwind CSS 4.1.10 (Utility-first CSS)
+- Headless UI 2.2.4 (Accessible components)
+- Heroicons 2.2.0 (Icon library)
+- React Hot Toast 2.5.2 (Notifications)
+
+📊 Data & Forms:
+- Axios 1.10.0 (HTTP client)
+- React Hook Form 7.58.1 (Form management)
+- Yup 1.6.1 (Form validation)
+- Chart.js 4.5.0 + React Chart.js 2 5.3.0 (Charts)
+
+🌍 Internationalization:
+- Custom i18n implementation
+- Support for English (en) and Swahili (sw)
+
+🔧 Development Tools:
+- ESLint 9.25.0 (Code linting)
+- TypeScript ESLint 8.30.1
+- SWC (Fast compilation)
+
+================================================================================
+3. PROJECT STRUCTURE
+================================================================================
+
+web-app/
+├── src/
+│   ├── components/          # Reusable UI components
+│   │   ├── charts/         # Chart components
+│   │   ├── Header.tsx      # Main header component
+│   │   ├── Sidebar.tsx     # Navigation sidebar
+│   │   ├── ProtectedRoute.tsx # Route protection
+│   │   └── RoleBasedRender.tsx # Role-based rendering
+│   ├── context/            # React Context providers
+│   │   ├── AuthContext.tsx # Authentication state
+│   │   └── ThemeContext.tsx # Theme management
+│   ├── hooks/              # Custom React hooks
+│   ├── i18n/               # Internationalization
+│   │   ├── en.json         # English translations
+│   │   ├── sw.json         # Swahili translations
+│   │   └── I18nProvider.tsx # i18n provider
+│   ├── layouts/            # Layout components
+│   │   └── MainLayout.tsx  # Main application layout
+│   ├── pages/              # Page components
+│   │   ├── DashboardPage.tsx # Main dashboard
+│   │   └── LoginPage.tsx   # Login page
+│   ├── routes/             # Routing configuration
+│   │   └── AppRoutes.tsx   # Main routing setup
+│   ├── services/           # API services
+│   │   └── api.ts          # API client configuration
+│   ├── types/              # TypeScript type definitions
+│   │   └── index.ts        # Main type definitions
+│   ├── utils/              # Utility functions
+│   ├── App.tsx             # Main application component
+│   ├── main.tsx            # Application entry point
+│   └── index.css           # Global styles
+├── public/                 # Static assets
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+├── vite.config.ts          # Vite configuration
+└── eslint.config.js        # ESLint configuration
+
+================================================================================
+4. DEVELOPMENT SETUP
+================================================================================
+
+🚀 Getting Started:
+
+1. Prerequisites:
+   - Node.js 18+ installed
+   - Git installed
+   - Code editor (VS Code recommended)
+
+2. Installation:
+   ```bash
+   cd web-app
+   npm install
+   ```
+
+3. Environment Setup:
+   Create `.env.local` file in web-app directory:
+   ```env
+   VITE_API_BASE_URL=http://localhost:3000/api/v1
+   VITE_APP_NAME=GCMS
+   VITE_APP_VERSION=1.0.0
+   ```
+
+4. Start Development Server:
+   ```bash
+   npm run dev
+   ```
+   Server will start at: http://localhost:5173
+
+5. Available Scripts:
+   - `npm run dev` - Start development server
+   - `npm run build` - Build for production
+   - `npm run preview` - Preview production build
+   - `npm run lint` - Run ESLint
+
+================================================================================
+5. CODING STANDARDS & BEST PRACTICES
+================================================================================
+
+📝 Code Style Guidelines:
+
+1. File Naming:
+   - Components: PascalCase (e.g., UserProfile.tsx)
+   - Utilities: camelCase (e.g., formatDate.ts)
+   - Constants: UPPER_SNAKE_CASE (e.g., API_ENDPOINTS.ts)
+
+2. Component Structure:
+   ```typescript
+   // 1. Imports (external libraries first, then internal)
+   import React from 'react';
+   import { useTranslation } from 'react-i18next';
+   import { User } from '../types';
+   
+   // 2. Type definitions
+   interface UserProfileProps {
+     user: User;
+     onUpdate?: (user: User) => void;
+   }
+   
+   // 3. Component definition
+   export const UserProfile: React.FC<UserProfileProps> = ({ user, onUpdate }) => {
+     // 4. Hooks
+     const { t } = useTranslation();
+     
+     // 5. Event handlers
+     const handleUpdate = () => {
+       // Implementation
+     };
+     
+     // 6. Render
+     return (
+       <div className="user-profile">
+         {/* JSX */}
+       </div>
+     );
+   };
+   ```
+
+3. TypeScript Best Practices:
+   - Always define interfaces for props
+   - Use strict type checking
+   - Avoid `any` type - use proper types
+   - Use union types for multiple possible values
+   - Export types from types/index.ts
+
+4. React Best Practices:
+   - Use functional components with hooks
+   - Keep components small and focused
+   - Use React.memo for performance optimization
+   - Implement proper error boundaries
+   - Use proper key props in lists
+
+5. State Management:
+   - Use React Context for global state
+   - Use local state for component-specific data
+   - Implement proper loading and error states
+   - Use optimistic updates where appropriate
+
+================================================================================
+6. COMPONENT DEVELOPMENT GUIDELINES
+================================================================================
+
+🏗️ Component Architecture:
+
+1. Component Categories:
+   - Layout Components: Structure and layout
+   - UI Components: Reusable UI elements
+   - Page Components: Full page implementations
+   - Feature Components: Business logic components
+
+2. Component Template:
+   ```typescript
+   import React from 'react';
+   import { useTranslation } from '../i18n/I18nProvider';
+   
+   interface ComponentNameProps {
+     // Define props
+   }
+   
+   export const ComponentName: React.FC<ComponentNameProps> = (props) => {
+     const { t } = useTranslation();
+     
+     return (
+       <div className="component-name">
+         {/* Component content */}
+       </div>
+     );
+   };
+   ```
+
+3. Styling Guidelines:
+   - Use Tailwind CSS classes
+   - Follow mobile-first responsive design
+   - Use consistent spacing and colors
+   - Implement dark mode support
+   - Ensure accessibility (ARIA labels, keyboard navigation)
+
+4. Component Examples:
+
+   Button Component:
+   ```typescript
+   interface ButtonProps {
+     variant?: 'primary' | 'secondary' | 'danger';
+     size?: 'sm' | 'md' | 'lg';
+     disabled?: boolean;
+     onClick?: () => void;
+     children: React.ReactNode;
+   }
+   
+   export const Button: React.FC<ButtonProps> = ({
+     variant = 'primary',
+     size = 'md',
+     disabled = false,
+     onClick,
+     children
+   }) => {
+     const baseClasses = 'inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2';
+     
+     const variantClasses = {
+       primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+       secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+       danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500'
+     };
+     
+     const sizeClasses = {
+       sm: 'px-3 py-1.5 text-sm',
+       md: 'px-4 py-2 text-base',
+       lg: 'px-6 py-3 text-lg'
+     };
+     
+     return (
+       <button
+         className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+         onClick={onClick}
+         disabled={disabled}
+       >
+         {children}
+       </button>
+     );
+   };
+   ```
+
+================================================================================
+7. STATE MANAGEMENT
+================================================================================
+
+🔄 State Management Strategy:
+
+1. Context Providers:
+   - AuthContext: User authentication state
+   - ThemeContext: Theme preferences
+   - I18nProvider: Language settings
+
+2. Local State:
+   - Use useState for component-specific state
+   - Use useReducer for complex state logic
+   - Use custom hooks for reusable state logic
+
+3. Server State:
+   - Use API service for data fetching
+   - Implement proper loading states
+   - Handle errors gracefully
+   - Cache responses when appropriate
+
+4. Example Custom Hook:
+   ```typescript
+   import { useState, useEffect } from 'react';
+   import { apiService } from '../services/api';
+   import { User } from '../types';
+   
+   export const useUser = (userId: string) => {
+     const [user, setUser] = useState<User | null>(null);
+     const [loading, setLoading] = useState(true);
+     const [error, setError] = useState<string | null>(null);
+   
+     useEffect(() => {
+       const fetchUser = async () => {
+         try {
+           setLoading(true);
+           const userData = await apiService.get<User>(`/users/${userId}`);
+           setUser(userData);
+         } catch (err) {
+           setError(err instanceof Error ? err.message : 'Failed to fetch user');
+         } finally {
+           setLoading(false);
+         }
+       };
+   
+       fetchUser();
+     }, [userId]);
+   
+     return { user, loading, error };
+   };
+   ```
+
+================================================================================
+8. API INTEGRATION
+================================================================================
+
+🌐 API Integration Guidelines:
+
+1. API Service Structure:
+   - Centralized API client (api.ts)
+   - Automatic token management
+   - Error handling and retry logic
+   - Request/response interceptors
+
+2. API Response Handling:
+   ```typescript
+   // Always handle the standardized API response format
+   interface ApiResponse<T> {
+     success: boolean;
+     message: string;
+     data?: T;
+     code?: string;
+     timestamp: string;
+   }
+   ```
+
+3. Error Handling:
+   ```typescript
+   try {
+     const data = await apiService.get('/endpoint');
+     // Handle success
+   } catch (error) {
+     if (error.response?.status === 401) {
+       // Handle unauthorized
+     } else if (error.response?.status === 404) {
+       // Handle not found
+     } else {
+       // Handle other errors
+     }
+   }
+   ```
+
+4. Loading States:
+   ```typescript
+   const [loading, setLoading] = useState(false);
+   
+   const handleSubmit = async () => {
+     setLoading(true);
+     try {
+       await apiService.post('/endpoint', data);
+     } finally {
+       setLoading(false);
+     }
+   };
+   ```
+
+5. Available API Endpoints:
+   - Authentication: /auth/login, /auth/register, /auth/profile
+   - Pickups: /pickups (GET, POST, PUT, DELETE)
+   - Users: /users (role-based access)
+   - Health: /health (system status)
+
+================================================================================
+9. STYLING & UI/UX GUIDELINES
+================================================================================
+
+🎨 Design System:
+
+1. Color Palette:
+   - Primary: Blue (#2563eb, #1d4ed8, #1e40af)
+   - Secondary: Green (#16a34a, #15803d, #166534)
+   - Neutral: Gray (#6b7280, #4b5563, #374151)
+   - Success: Green (#22c55e)
+   - Warning: Yellow (#eab308)
+   - Error: Red (#ef4444)
+
+2. Typography:
+   - Font Family: Inter (system fallback)
+   - Headings: font-bold, text-gray-900
+   - Body: text-gray-700
+   - Captions: text-gray-500, text-sm
+
+3. Spacing:
+   - Use Tailwind spacing scale
+   - Consistent padding: p-4, p-6, p-8
+   - Consistent margins: m-4, m-6, m-8
+   - Gap between elements: gap-4, gap-6
+
+4. Responsive Design:
+   ```typescript
+   // Mobile-first approach
+   <div className="
+     w-full                    // Mobile: full width
+     md:w-1/2                  // Tablet: half width
+     lg:w-1/3                  // Desktop: one-third width
+     p-4                       // Mobile: small padding
+     md:p-6                    // Tablet: medium padding
+     lg:p-8                    // Desktop: large padding
+   ">
+   ```
+
+5. Component Styling:
+   - Use consistent border radius: rounded-md, rounded-lg
+   - Use consistent shadows: shadow-sm, shadow-md, shadow-lg
+   - Use consistent transitions: transition-colors, transition-all
+   - Implement hover and focus states
+
+6. Accessibility:
+   - Use semantic HTML elements
+   - Implement proper ARIA labels
+   - Ensure keyboard navigation
+   - Maintain color contrast ratios
+   - Provide alt text for images
+
+================================================================================
+10. TESTING STRATEGY
+================================================================================
+
+🧪 Testing Guidelines:
+
+1. Testing Levels:
+   - Unit Tests: Individual components and functions
+   - Integration Tests: Component interactions
+   - E2E Tests: Complete user workflows
+
+2. Testing Tools:
+   - Jest (test runner)
+   - React Testing Library (component testing)
+   - Cypress (E2E testing) - recommended for future
+
+3. Test Structure:
+   ```typescript
+   import { render, screen, fireEvent } from '@testing-library/react';
+   import { Button } from './Button';
+   
+   describe('Button Component', () => {
+     it('renders with correct text', () => {
+       render(<Button>Click me</Button>);
+       expect(screen.getByText('Click me')).toBeInTheDocument();
+     });
+   
+     it('calls onClick when clicked', () => {
+       const handleClick = jest.fn();
+       render(<Button onClick={handleClick}>Click me</Button>);
+       fireEvent.click(screen.getByText('Click me'));
+       expect(handleClick).toHaveBeenCalledTimes(1);
+     });
+   });
+   ```
+
+4. Testing Best Practices:
+   - Test user behavior, not implementation
+   - Use descriptive test names
+   - Test error states and edge cases
+   - Mock external dependencies
+   - Maintain test coverage above 80%
+
+================================================================================
+11. PERFORMANCE OPTIMIZATION
+================================================================================
+
+⚡ Performance Guidelines:
+
+1. Code Splitting:
+   - Use React.lazy for route-based splitting
+   - Implement dynamic imports for heavy components
+   - Use Suspense for loading states
+
+2. Component Optimization:
+   ```typescript
+   // Use React.memo for expensive components
+   export const ExpensiveComponent = React.memo<Props>(({ data }) => {
+     return <div>{/* Component content */}</div>;
+   });
+   
+   // Use useMemo for expensive calculations
+   const expensiveValue = useMemo(() => {
+     return heavyCalculation(data);
+   }, [data]);
+   
+   // Use useCallback for function props
+   const handleClick = useCallback(() => {
+     // Handle click
+   }, [dependencies]);
+   ```
+
+3. Bundle Optimization:
+   - Tree shaking for unused code
+   - Optimize imports (avoid importing entire libraries)
+   - Use production builds for testing
+   - Monitor bundle size with webpack-bundle-analyzer
+
+4. Image Optimization:
+   - Use WebP format when possible
+   - Implement lazy loading for images
+   - Use appropriate image sizes
+   - Compress images before deployment
+
+5. Caching Strategy:
+   - Implement proper cache headers
+   - Use service workers for offline support
+   - Cache API responses appropriately
+   - Implement optimistic updates
+
+================================================================================
+12. SECURITY CONSIDERATIONS
+================================================================================
+
+🔒 Security Guidelines:
+
+1. Authentication:
+   - Store JWT tokens securely (httpOnly cookies recommended)
+   - Implement token refresh mechanism
+   - Clear tokens on logout
+   - Validate tokens on each request
+
+2. Input Validation:
+   - Validate all user inputs
+   - Sanitize data before rendering
+   - Use TypeScript for type safety
+   - Implement proper error handling
+
+3. XSS Prevention:
+   - Use React's built-in XSS protection
+   - Sanitize HTML content
+   - Use proper content security policy
+   - Avoid dangerouslySetInnerHTML
+
+4. CSRF Protection:
+   - Use CSRF tokens for state-changing operations
+   - Validate request origins
+   - Implement proper session management
+
+5. Environment Variables:
+   - Never commit sensitive data
+   - Use .env.local for local development
+   - Validate environment variables at startup
+   - Use different environments for dev/staging/prod
+
+================================================================================
+13. DEPLOYMENT GUIDELINES
+================================================================================
+
+🚀 Deployment Process:
+
+1. Build Process:
+   ```bash
+   # Install dependencies
+   npm install
+   
+   # Run tests
+   npm test
+   
+   # Build for production
+   npm run build
+   
+   # Preview build
+   npm run preview
+   ```
+
+2. Environment Configuration:
+   ```env
+   # Production environment
+   VITE_API_BASE_URL=https://api.gcms.com/api/v1
+   VITE_APP_NAME=GCMS
+   VITE_APP_VERSION=1.0.0
+   VITE_ENABLE_ANALYTICS=true
+   ```
+
+3. Deployment Checklist:
+   - [ ] All tests passing
+   - [ ] Build successful
+   - [ ] Environment variables configured
+   - [ ] API endpoints accessible
+   - [ ] SSL certificate installed
+   - [ ] CDN configured (if applicable)
+   - [ ] Monitoring and logging setup
+
+4. CI/CD Pipeline (Recommended):
+   ```yaml
+   # Example GitHub Actions workflow
+   name: Deploy to Production
+   on:
+     push:
+       branches: [main]
+   
+   jobs:
+     deploy:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v2
+         - uses: actions/setup-node@v2
+         - run: npm install
+         - run: npm test
+         - run: npm run build
+         - run: npm run deploy
+   ```
+
+================================================================================
+14. TROUBLESHOOTING
+================================================================================
+
+🔧 Common Issues & Solutions:
+
+1. Development Server Issues:
+   ```bash
+   # Clear cache and reinstall
+   rm -rf node_modules package-lock.json
+   npm install
+   
+   # Check port conflicts
+   netstat -an | findstr :5173
+   
+   # Restart development server
+   npm run dev
+   ```
+
+2. Build Issues:
+   ```bash
+   # Clear build cache
+   rm -rf dist
+   
+   # Check TypeScript errors
+   npx tsc --noEmit
+   
+   # Check ESLint errors
+   npm run lint
+   ```
+
+3. API Connection Issues:
+   - Verify backend server is running
+   - Check CORS configuration
+   - Verify API base URL in environment
+   - Check network connectivity
+
+4. Performance Issues:
+   - Use React DevTools Profiler
+   - Check bundle size with webpack-bundle-analyzer
+   - Monitor network requests
+   - Implement code splitting
+
+5. Common Error Messages:
+   - "Module not found": Check import paths and dependencies
+   - "Type error": Verify TypeScript types
+   - "CORS error": Check backend CORS configuration
+   - "Token expired": Implement token refresh logic
+
+================================================================================
+15. USEFUL RESOURCES
+================================================================================
+
+📚 Learning Resources:
+
+1. Official Documentation:
+   - React: https://react.dev/
+   - TypeScript: https://www.typescriptlang.org/
+   - Vite: https://vitejs.dev/
+   - Tailwind CSS: https://tailwindcss.com/
+
+2. Development Tools:
+   - React DevTools (Browser extension)
+   - TypeScript Playground
+   - Tailwind CSS IntelliSense (VS Code extension)
+   - ESLint (VS Code extension)
+
+3. Useful Libraries:
+   - React Hook Form: https://react-hook-form.com/
+   - React Router: https://reactrouter.com/
+   - Axios: https://axios-http.com/
+   - Chart.js: https://www.chartjs.org/
+
+4. Design Resources:
+   - Heroicons: https://heroicons.com/
+   - Color palette tools
+   - UI component libraries
+   - Accessibility guidelines
+
+5. Performance Tools:
+   - Lighthouse (Chrome DevTools)
+   - WebPageTest
+   - Bundle Analyzer
+   - React Profiler
+
+================================================================================
+🎯 DEVELOPMENT WORKFLOW
+================================================================================
+
+1. Feature Development:
+   ```bash
+   # Create feature branch
+   git checkout -b feature/user-dashboard
+   
+   # Make changes and commit
+   git add .
+   git commit -m "feat: add user dashboard component"
+   
+   # Push to remote
+   git push origin feature/user-dashboard
+   
+   # Create pull request
+   # Review and merge
+   ```
+
+2. Code Review Checklist:
+   - [ ] Code follows style guidelines
+   - [ ] TypeScript types are correct
+   - [ ] Components are properly tested
+   - [ ] Performance considerations implemented
+   - [ ] Accessibility requirements met
+   - [ ] Documentation updated
+
+3. Release Process:
+   - [ ] All tests passing
+   - [ ] Code review completed
+   - [ ] Documentation updated
+   - [ ] Version bumped
+   - [ ] Changelog updated
+   - [ ] Deployed to staging
+   - [ ] Deployed to production
+
+================================================================================
+📞 SUPPORT & CONTRIBUTION
+================================================================================
+
+For questions, issues, or contributions:
+
+1. Code Issues:
+   - Create detailed issue reports
+   - Include reproduction steps
+   - Attach relevant logs/screenshots
+
+2. Feature Requests:
+   - Describe the feature clearly
+   - Explain the use case
+   - Consider implementation complexity
+
+3. Documentation:
+   - Keep this guide updated
+   - Add new patterns and best practices
+   - Document breaking changes
+
+4. Team Communication:
+   - Use clear commit messages
+   - Document complex decisions
+   - Share knowledge and learnings
+
+================================================================================
+🎉 HAPPY CODING!
+================================================================================
+
+Remember: Write clean, maintainable code that your future self (and teammates) will thank you for!
+
+Last Updated: June 23, 2025
+Version: 1.0.0
+Maintainer: GCMS Development Team 
