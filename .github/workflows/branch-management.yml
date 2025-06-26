@@ -1,0 +1,115 @@
+name: Branch Management
+
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+
+jobs:
+  cleanup-branches:
+    name: Cleanup Merged Branches
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Cleanup merged branches
+      run: |
+        # Get list of merged branches
+        git branch -r --merged origin/main | grep -v 'origin/main' | grep -v 'origin/develop' | sed 's/origin\///' > merged_branches.txt
+        
+        # Delete merged feature and bugfix branches
+        while read branch; do
+          if [[ $branch == feature/* ]] || [[ $branch == bugfix/* ]]; then
+            echo "Deleting merged branch: $branch"
+            git push origin --delete $branch || echo "Failed to delete $branch"
+          fi
+        done < merged_branches.txt
+
+  validate-branch-naming:
+    name: Validate Branch Naming
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Check branch naming convention
+      run: |
+        BRANCH_NAME="${{ github.head_ref }}"
+        
+        # Check if branch follows naming convention
+        if [[ ! $BRANCH_NAME =~ ^(feature|bugfix|hotfix|release)/[a-z0-9-]+$ ]]; then
+          echo "❌ Branch name '$BRANCH_NAME' does not follow naming convention"
+          echo "Expected format: type/description (e.g., feature/user-auth, bugfix/login-issue)"
+          exit 1
+        fi
+        
+        echo "✅ Branch name '$BRANCH_NAME' follows naming convention"
+
+  enforce-conventional-commits:
+    name: Enforce Conventional Commits
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Validate commit messages
+      run: |
+        # Get commits in this PR
+        git log --oneline origin/main..HEAD > commits.txt
+        
+        # Check each commit message
+        while read commit; do
+          COMMIT_HASH=$(echo $commit | cut -d' ' -f1)
+          COMMIT_MSG=$(echo $commit | cut -d' ' -f2-)
+          
+          # Check if commit follows conventional format
+          if [[ ! $COMMIT_MSG =~ ^(feat|fix|docs|style|refactor|perf|test|chore)(\([a-z]+\))?: ]]; then
+            echo "❌ Commit $COMMIT_HASH does not follow conventional commit format"
+            echo "Message: $COMMIT_MSG"
+            echo "Expected format: type(scope): description"
+            exit 1
+          fi
+        done < commits.txt
+        
+        echo "✅ All commits follow conventional commit format"
+
+  update-changelog:
+    name: Update CHANGELOG
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update CHANGELOG.md
+      run: |
+        # This would typically use a tool like conventional-changelog
+        # For now, we'll just create a placeholder
+        if [ ! -f CHANGELOG.md ]; then
+          echo "# Changelog" > CHANGELOG.md
+          echo "" >> CHANGELOG.md
+          echo "All notable changes to this project will be documented in this file." >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+        fi
+        
+        echo "CHANGELOG.md updated"
+
+    - name: Commit CHANGELOG updates
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add CHANGELOG.md
+        git commit -m "docs: update changelog" || echo "No changes to commit"
+        git push 
