@@ -1,0 +1,52 @@
+# Global code owners - these users will be requested for review on all pull requests
+* @GCMS-project
+
+# Backend specific code owners
+/backend/ @GCMS-project
+/backend/models/ @GCMS-project
+/backend/controllers/ @GCMS-project
+/backend/routes/ @GCMS-project
+/backend/services/ @GCMS-project
+/backend/middlewares/ @GCMS-project
+/backend/utils/ @GCMS-project
+
+# Frontend specific code owners
+/web-app/ @GCMS-project
+/web-app/src/ @GCMS-project
+/web-app/src/components/ @GCMS-project
+/web-app/src/pages/ @GCMS-project
+/web-app/src/services/ @GCMS-project
+
+# Database specific code owners
+/db/ @GCMS-project
+/db/migrations/ @GCMS-project
+/db/seeds/ @GCMS-project
+
+# Documentation code owners
+/docs/ @GCMS-project
+*.md @GCMS-project
+
+# Configuration files
+*.json @GCMS-project
+*.yml @GCMS-project
+*.yaml @GCMS-project
+.env* @GCMS-project
+
+# GitHub Actions workflows
+/.github/workflows/ @GCMS-project
+
+# Docker configuration
+Dockerfile* @GCMS-project
+docker-compose*.yml @GCMS-project
+
+# Package management
+package*.json @GCMS-project
+npm-shrinkwrap.json @GCMS-project
+yarn.lock @GCMS-project
+
+# Testing
+/tests/ @GCMS-project
+*.test.js @GCMS-project
+*.test.ts @GCMS-project
+*.spec.js @GCMS-project
+*.spec.ts @GCMS-project 
