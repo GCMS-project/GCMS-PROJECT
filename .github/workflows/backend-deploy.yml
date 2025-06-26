@@ -1,0 +1,72 @@
+name: Backend Deployment
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths: [ 'backend/**', 'db/**' ]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend API
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        environment: [staging, production]
+        include:
+          - environment: staging
+            branch: develop
+            if-condition: github.ref == 'refs/heads/develop'
+          - environment: production
+            branch: main
+            if-condition: github.ref == 'refs/heads/main'
+
+    if: ${{ matrix.if-condition }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: backend/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./backend
+      run: npm ci --only=production
+
+    - name: Run database migrations
+      working-directory: ./backend
+      env:
+        NODE_ENV: ${{ matrix.environment }}
+        DB_HOST: ${{ secrets.DB_HOST }}
+        DB_PORT: ${{ secrets.DB_PORT }}
+        DB_USER: ${{ secrets.DB_USER }}
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: ${{ secrets.DB_NAME }}
+      run: |
+        npm run migrate || echo "Migration script not configured yet"
+
+    - name: Deploy to ${{ matrix.environment }}
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        HOST: ${{ secrets.HOST }}
+        USER: ${{ secrets.USER }}
+      run: |
+        echo "Deploying backend to ${{ matrix.environment }}..."
+        # Add your deployment commands here
+        # Example for VPS deployment:
+        # ssh -i $DEPLOY_KEY $USER@$HOST "cd /var/www/gcms && git pull && npm install && pm2 restart gcms-api"
+
+    - name: Health check
+      run: |
+        echo "Performing health check..."
+        # Add health check commands here
+        # curl -f ${{ secrets.API_URL }}/api/health || exit 1 

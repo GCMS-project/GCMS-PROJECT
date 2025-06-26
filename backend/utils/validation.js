@@ -7,14 +7,13 @@ const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d
 
 // User validation schemas
 const userRegistrationSchema = z.object({
-  email: z.string().email('Invalid email format'),
-  phone: z.string().regex(phonePattern, 'Invalid phone number format'),
-  password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(passwordPattern, 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character'),
-  first_name: z.string().min(2, 'First name must be at least 2 characters').max(100),
-  last_name: z.string().min(2, 'Last name must be at least 2 characters').max(100),
-  address: z.string().optional(),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().min(10, 'Phone number must be at least 10 characters'),
+  password: z.string().min(8, 'Password must be at least 8 characters'),
+  first_name: z.string().min(2, 'First name must be at least 2 characters').max(50),
+  last_name: z.string().min(2, 'Last name must be at least 2 characters').max(50),
+  role: z.enum(['admin', 'customer', 'picker', 'dumpsite_officer', 'tender_officer']).default('customer'),
+  address: z.string().max(500).optional(),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
 });
@@ -25,12 +24,16 @@ const userLoginSchema = z.object({
 });
 
 const userUpdateSchema = z.object({
-  first_name: z.string().min(2).max(100).optional(),
-  last_name: z.string().min(2).max(100).optional(),
-  phone: z.string().regex(phonePattern).optional(),
-  address: z.string().optional(),
+  email: z.string().email('Invalid email address').optional(),
+  phone: z.string().min(10, 'Phone number must be at least 10 characters').optional(),
+  first_name: z.string().min(2, 'First name must be at least 2 characters').max(50).optional(),
+  last_name: z.string().min(2, 'Last name must be at least 2 characters').max(50).optional(),
+  role: z.enum(['admin', 'customer', 'picker', 'dumpsite_officer', 'tender_officer']).optional(),
+  address: z.string().max(500).optional(),
   latitude: z.number().min(-90).max(90).optional(),
   longitude: z.number().min(-180).max(180).optional(),
+  is_active: z.boolean().optional(),
+  is_verified: z.boolean().optional(),
   profile_image_url: z.string().url().optional(),
 });
 
@@ -187,4 +190,6 @@ module.exports = {
   emailPattern,
   phonePattern,
   passwordPattern,
+  validateUserRegistration: (data) => userRegistrationSchema.safeParse(data),
+  validateUserUpdate: (data) => userUpdateSchema.safeParse(data),
 }; 

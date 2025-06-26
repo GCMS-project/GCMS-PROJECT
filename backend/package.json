@@ -10,34 +10,44 @@
     "lint": "eslint .",
     "docs": "swagger-jsdoc -d swaggerDef.js -o swagger.json"
   },
-  "keywords": ["garbage", "collection", "management", "api", "express", "postgresql"],
+  "keywords": [
+    "garbage",
+    "collection",
+    "management",
+    "api",
+    "express",
+    "postgresql"
+  ],
   "author": "GCMS Team",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "pg": "^8.11.3",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.0.2",
-    "zod": "^3.22.4",
-    "winston": "^3.11.0",
     "cors": "^2.8.5",
-    "helmet": "^7.1.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
-    "multer": "^1.4.5-lts.1",
-    "dotenv": "^16.3.1",
-    "uuid": "^9.0.1",
+    "helmet": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
     "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.11.3",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.7",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-ui-express": "^5.0.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
+    "eslint": "^8.55.0",
     "jest": "^29.7.0",
-    "supertest": "^6.3.3",
-    "eslint": "^8.55.0"
+    "nodemon": "^3.0.2",
+    "supertest": "^6.3.3"
   },
   "engines": {
     "node": ">=16.0.0"
   }
-} 
+}

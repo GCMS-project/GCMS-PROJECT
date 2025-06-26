@@ -8,7 +8,8 @@ console.log('==========================================');
 // Start the backend server
 const backendProcess = spawn('node', ['server.js'], {
   cwd: path.join(__dirname, 'backend'),
-  stdio: 'inherit'
+  stdio: 'inherit',
+  env: { ...process.env, NODE_ENV: process.env.NODE_ENV || 'development' }
 });
 
 backendProcess.on('error', (error) => {
