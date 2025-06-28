@@ -14,7 +14,7 @@ const { sanitizeInput } = require('./middlewares/validation');
 const logger = require('./utils/logger');
 
 // Import database and models
-const sequelize = require('./config/database');
+const { sequelize, initializeDatabase } = require('./config/database');
 const { defineAssociations } = require('./models');
 
 // Import services
@@ -34,6 +34,26 @@ const routeRoutes = require('./routes/routes');
 
 // Import middleware
 const auth = require('./middlewares/auth');
+
+// Initialize database and models
+const initializeApp = async () => {
+  try {
+    // Initialize database
+    const dbInitialized = await initializeDatabase();
+    if (!dbInitialized) {
+      throw new Error('Database initialization failed');
+    }
+
+    // Define model associations
+    defineAssociations();
+    logger.info('✅ Model associations defined successfully');
+
+    return true;
+  } catch (error) {
+    logger.error('❌ Application initialization failed:', error);
+    return false;
+  }
+};
 
 // Create Express app
 const app = express();
@@ -251,29 +271,53 @@ app.use(errorHandler);
 
 // Start server
 const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-  logger.info(`🚀 GCMS Backend Server running on port ${PORT}`);
-  logger.info(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
-  logger.info(`🔍 Health check available at http://localhost:${PORT}/api/health`);
-  logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-});
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  logger.info('SIGTERM received, shutting down gracefully');
-  server.close(() => {
-    logger.info('Process terminated');
-    process.exit(0);
-  });
-});
+// Initialize app and start server
+const startServer = async () => {
+  try {
+    // Initialize database and models
+    const initialized = await initializeApp();
+    if (!initialized) {
+      logger.error('❌ Failed to initialize application');
+      process.exit(1);
+    }
 
-process.on('SIGINT', () => {
-  logger.info('SIGINT received, shutting down gracefully');
-  server.close(() => {
-    logger.info('Process terminated');
-    process.exit(0);
-  });
-});
+    // Start the server
+    const server = app.listen(PORT, () => {
+      logger.info(`🚀 GCMS Backend Server running on port ${PORT}`);
+      logger.info(`📚 API Documentation available at http://localhost:${PORT}/api-docs`);
+      logger.info(`🔍 Health check available at http://localhost:${PORT}/api/health`);
+      logger.info(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+      
+      // Start automated services after server is running
+      startAutomatedServices();
+    });
+
+    // Graceful shutdown
+    process.on('SIGTERM', () => {
+      logger.info('SIGTERM received, shutting down gracefully');
+      server.close(() => {
+        logger.info('Process terminated');
+        process.exit(0);
+      });
+    });
+
+    process.on('SIGINT', () => {
+      logger.info('SIGINT received, shutting down gracefully');
+      server.close(() => {
+        logger.info('Process terminated');
+        process.exit(0);
+      });
+    });
+
+  } catch (error) {
+    logger.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();
 
 // Start automated services
 function startAutomatedServices() {

@@ -3,6 +3,30 @@ const router = express.Router();
 const { GPSLocation, User, Route } = require('../models');
 const { requireRole } = require('../middlewares/auth');
 
+// Root GPS endpoint - return GPS service status
+router.get('/', async (req, res) => {
+  try {
+    res.json({
+      success: true,
+      message: 'GPS Service is running',
+      endpoints: {
+        update: 'POST /api/gps/update - Update GPS location',
+        current: 'GET /api/gps/current - Get current location',
+        history: 'GET /api/gps/history - Get location history',
+        route: 'GET /api/gps/route/:routeId - Get route tracking',
+        nearby: 'GET /api/gps/nearby-providers - Get nearby service providers'
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error in GPS root endpoint:', error);
+    res.status(500).json({
+      success: false,
+      message: 'GPS service error'
+    });
+  }
+});
+
 // Update GPS location
 router.post('/update', async (req, res) => {
   try {
